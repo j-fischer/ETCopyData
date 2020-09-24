@@ -102,11 +102,13 @@ You must provide the name of the sObject
 ```
 {
 	"name": "Location__c",
+	"externalIdField": "External_Id_Field__c",
 	"ignoreFields": "OwnerId, IgnoreField__c",
 	"maxRecords": 50,
 	"orderBy": "City__c",
-	"where": "State__c = 'Texas'",
-	"externalIdField": "External_Id_Field__c"
+    "twoPassReferenceFields": "Foo__c,Bar__c",
+	"twoPassUpdateFields": "Not_a_Lookup_Field__c,A_Text_Field__c",
+	"where": "State__c = 'Texas'"
 }
 ```
 
@@ -121,6 +123,7 @@ This is the structure for each sObject
 | maxRecords             | -1      | Integer   | Overrides the global **maxRecordsEach** field.                                                                             |
 | orderBy                | null    | String    | For exports, determines the order for the records that are exported.                                                       |
 | twoPassReferenceFields | null    | String[]  | For imports, lists the fields that need to be set using a separate update as they refer an SObject that is not loaded yet. |
+| twoPassUpdateFields    | null    | String[]  | For imports, lists the fields that need to be set using a separate update request along with the **twoPassreferenceFields**.|
 | where                  | null    | String    | Restrict which records are be exported.                                                                                    |
 | externalIdField        | null    | String    | API name of external ID field to be used for an upsert operation.                                                                                    |
 
