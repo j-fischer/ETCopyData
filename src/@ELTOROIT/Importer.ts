@@ -467,7 +467,7 @@ export class Importer {
 							});
 						}
 
-						const recordsToUpdate = [...records.values()];
+						const recordsToUpdate: Array<any> = [...records.values()];
 
 						Util.writeLog(`[${orgDestination.alias}] [${sObjectName}] recordsToUpdate: ${JSON.stringify(recordsToUpdate)}`, LogLevel.TRACE);
 						

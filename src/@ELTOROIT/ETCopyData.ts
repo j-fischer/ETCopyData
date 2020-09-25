@@ -30,6 +30,12 @@ export class ETCopyData {
 			char: "s",
 			description: "SFDX alias or username for the SOURCE org",
 			helpValue: "(alias|username)"
+		}),
+		forceprodcopy: flags.boolean({
+			description: 'Force the copy to production'
+		}),
+		forceproddeletion: flags.boolean({
+			description: 'Force the deletion of to production data'
 		})
 	};
 
@@ -62,6 +68,14 @@ export class ETCopyData {
 		if (params.orgdestination) {
 			Util.writeLog(`Parameter: destination [${params.orgdestination}]`, LogLevel.TRACE);
 			s.orgAliases.set(WhichOrg.DESTINATION, params.orgdestination);
+		}
+		if (params.forceprodcopy) {
+			Util.writeLog(`Parameter: forceprodcopy [${params.forceprodcopy}]`, LogLevel.TRACE);
+			s.forceProductionCopy = true;
+		}
+		if (params.forceproddeletion) {
+			Util.writeLog(`Parameter: forceproddeletion [${params.forceproddeletion}]`, LogLevel.TRACE);
+			s.forceProductionDeletion = true;
 		}
 		return s;
 	}
@@ -389,42 +403,46 @@ export class ETCopyData {
 					Util.throwError(msg);
 					reject(msg);
 				} else if (data.settings.copyToProduction) {
-					if (data.settings.deleteDestination) {
-						const msg = "Destination Org can not be production because this app deletes data! (2)";
+					if (data.settings.deleteDestination && !data.settings.forceProductionDeletion) {
+						const msg = "Cannot delete production data unless the --forceproddeletion flag is provided.";
 						Util.writeLog(msg, LogLevel.FATAL);
 						Util.throwError(msg);
 						reject(msg);
 					} else {
-						UX.create()
-							.then((ux) => {
-								console.log("*** *** ***");
-								console.log("*** *** ***");
-								console.log("*** *** ***");
-								console.log("*** *** *** Review the list of sObjects above, and tell me... ");
-								ux.confirm("*** *** *** Do you really, really, really want to import data into your PRODUCTION org?")
-									.then((resultYN) => {
-										if (resultYN) {
-											console.log("*** *** ***");
-											this.RequestedNumberEntered(ux, 0, "Just to make sure you are awake... Type this number")
-												.then(() => resolve())
-												.catch((err) => {
-													reject(err);
-												});
-										} else {
-											reject("You decided not to import data into production, good boy (girl)!");
-										}
-									})
-									.catch((err) => {
-										reject(err);
-									});
-							})
-							.catch((err) => {
-								Util.throwError(err);
-								reject(err);
-							});
+						if (data.settings.forceProductionCopy) {
+							resolve();
+						} else {
+							UX.create()
+								.then((ux) => {
+									console.log("*** *** ***");
+									console.log("*** *** ***");
+									console.log("*** *** ***");
+									console.log("*** *** *** Review the list of sObjects above, and tell me... ");
+									ux.confirm("*** *** *** Do you really, really, really want to import data into your PRODUCTION org?")
+										.then((resultYN) => {
+											if (resultYN) {
+												console.log("*** *** ***");
+												this.RequestedNumberEntered(ux, 0, "Just to make sure you are awake... Type this number")
+													.then(() => resolve())
+													.catch((err) => {
+														reject(err);
+													});
+											} else {
+												reject("You decided not to import data into production, good choice!");
+											}
+										})
+										.catch((err) => {
+											reject(err);
+										});
+								})
+								.catch((err) => {
+									Util.throwError(err);
+									reject(err);
+								});
+						}
 					}
 				} else {
-					const msg = "Destination Org can not be production because this app deletes data! (1)";
+					const msg = "The destination Org can not be production unless 'copyToProduction' is set to true.";
 					Util.writeLog(msg, LogLevel.FATAL);
 					Util.throwError(msg);
 					reject(msg);

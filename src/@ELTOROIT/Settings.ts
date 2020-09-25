@@ -90,6 +90,8 @@ export class Settings implements ISettingsValues {
 	public rootFolderRaw: string;
 	public rootFolderFull: string;
 	public configfolder: string;
+	public forceProductionCopy: boolean;
+	public forceProductionDeletion: boolean;
 
 	// Local private variables
 	private configFile: ConfigFile<ConfigFile.Options> = null;
@@ -424,6 +426,9 @@ export class Settings implements ISettingsValues {
 							this.pollingTimeout = parseInt(value, 10);
 						})
 					);
+
+					this.forceProductionCopy = overrideSettings.forceProductionCopy;
+					this.forceProductionDeletion = overrideSettings.forceProductionDeletion;
 
 					Promise.all(promises)
 						.then(() => {
