@@ -8,3 +8,5 @@
 /node_modules
 @ELTOROIT/data
 sfdx-project.json
+npm-shrinkwrap.json
+oclif.manifest.json
