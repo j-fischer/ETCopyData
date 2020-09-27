@@ -1,8 +1,10 @@
 # ETCopyData
 
-SFDX Plugin to populate your scratch org and/or developer sandbox with data extracted from multiple sObjects.
+NOTE: This is a fork of the [original project of ETCopyData](https://github.com/j-fischer/ETCopyData).
 
-[![Version](https://img.shields.io/npm/v/etcopydata.svg)](https://npmjs.org/package/etcopydata) [![License](https://img.shields.io/npm/l/etcopydata.svg)](https://github.com/ELTOROIT/ETCopyData/blob/master/package.json)
+SFDX Plugin to populate your orgs with data extracted from multiple sObjects.
+
+[![Version](https://img.shields.io/npm/v/etcopydata.svg)](https://npmjs.org/package/etcopydata) [![License](https://img.shields.io/npm/l/etcopydata.svg)](https://github.com/j-fischer/ETCopyData/blob/master/package.json)
 
 <!-- ET-AUTO-START: This section is auto-updated... -->
 <!-- toc -->
@@ -24,7 +26,7 @@ You'll be prompted that this, like any plugin, is not officially code-signed by 
 ## Install from source
 
 1. Install the SDFX CLI.
-2. Clone the repository: `git clone https://github.com/eltoroit/ETCopyData.git`
+2. Clone the repository: `git clone https://github.com/j-fischer/ETCopyData.git`
 3. Change directory `cd ETCopyData`
 4. Install npm modules: `npm install --production`
 5. Link the plugin: `sfdx plugins:link .`
@@ -238,7 +240,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src/commands/ETCopyData/Compare.ts](https://github.com/eltoroit/ETCopyData/blob/v0.5.11b/src/commands/ETCopyData/Compare.ts)_
+_See code: [src/commands/ETCopyData/Compare.ts](https://github.com/j-fischer/ETCopyData/blob/master/src/commands/ETCopyData/Compare.ts)_
 
 ## `sfdx ETCopyData:delete [-c <string>] [-d <string>] [-s <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -265,7 +267,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src/commands/ETCopyData/delete.ts](https://github.com/eltoroit/ETCopyData/blob/v0.5.11b/src/commands/ETCopyData/delete.ts)_
+_See code: [src/commands/ETCopyData/delete.ts](https://github.com/j-fischer/ETCopyData/blob/master/src/commands/ETCopyData/delete.ts)_
 
 ## `sfdx ETCopyData:export [-c <string>] [-d <string>] [-s <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -292,7 +294,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src/commands/ETCopyData/export.ts](https://github.com/eltoroit/ETCopyData/blob/v0.5.11b/src/commands/ETCopyData/export.ts)_
+_See code: [src/commands/ETCopyData/export.ts](https://github.com/j-fischer/ETCopyData/blob/master/src/commands/ETCopyData/export.ts)_
 
 ## `sfdx ETCopyData:full [-c <string>] [-d <string>] [-s <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -319,7 +321,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src/commands/ETCopyData/full.ts](https://github.com/eltoroit/ETCopyData/blob/v0.5.11b/src/commands/ETCopyData/full.ts)_
+_See code: [src/commands/ETCopyData/full.ts](https://github.com/j-fischer/ETCopyData/blob/master/src/commands/ETCopyData/full.ts)_
 
 ## `sfdx ETCopyData:import [-c <string>] [-d <string>] [-s <string>] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -346,6 +348,6 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src/commands/ETCopyData/import.ts](https://github.com/eltoroit/ETCopyData/blob/v0.5.11b/src/commands/ETCopyData/import.ts)_
+_See code: [src/commands/ETCopyData/import.ts](https://github.com/j-fischer/ETCopyData/blob/master/src/commands/ETCopyData/import.ts)_
 <!-- commandsstop -->
 <!-- ET-AUTO-STOP: This section is auto-updated... -->
