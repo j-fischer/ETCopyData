@@ -31,6 +31,10 @@ export class ETCopyData {
 			description: "SFDX alias or username for the SOURCE org",
 			helpValue: "(alias|username)"
 		}),
+		deletedestination: flags.boolean({
+			char: "r",
+			description: "Delete records in destination org prior to data loads"
+		}),
 		forceprodcopy: flags.boolean({
 			description: 'Force the copy to production'
 		}),
@@ -68,6 +72,10 @@ export class ETCopyData {
 		if (params.orgdestination) {
 			Util.writeLog(`Parameter: destination [${params.orgdestination}]`, LogLevel.TRACE);
 			s.orgAliases.set(WhichOrg.DESTINATION, params.orgdestination);
+		}
+		if (params.deletedestination) {
+			Util.writeLog(`Parameter: deletedestination [${params.deletedestination}]`, LogLevel.TRACE);
+			s.deleteDestination = true;
 		}
 		if (params.forceprodcopy) {
 			Util.writeLog(`Parameter: forceprodcopy [${params.forceprodcopy}]`, LogLevel.TRACE);

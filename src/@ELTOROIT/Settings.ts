@@ -414,11 +414,17 @@ export class Settings implements ISettingsValues {
 					);
 
 					// deleteDestination
-					promises.push(
-						this.processStringValues(resValues, "deleteDestination", false).then((value: string) => {
-							this.deleteDestination = value === "true";
-						})
-					);
+					if (overrideSettings.deleteDestination) {
+						msg = `Configuration value for [deleteDestination] read from command line: ${overrideSettings.deleteDestination}`;
+						this.deleteDestination = overrideSettings.deleteDestination;
+						Util.writeLog(msg, LogLevel.INFO);
+					} else {
+						promises.push(
+							this.processStringValues(resValues, "deleteDestination", false).then((value: string) => {
+								this.deleteDestination = value === "true";
+							})
+						);
+					}
 
 					// pollingTimeout
 					promises.push(
