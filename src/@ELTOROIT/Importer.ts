@@ -12,9 +12,20 @@ class ReferenceFieldMapping {
 	}
 }
 
+
+class UpdateFieldMapping {
+	public name: string;
+	public value: any;
+	constructor(name: string, value: any) {
+		this.name = name;
+		this.value = value;
+	}
+}
+
 export class Importer {
 	private matchingIds: Map<string, Map<string, string>>; // SobjectName => Old => New
 	private twoPassReferenceFieldData: Map<string, Map<string, Array<ReferenceFieldMapping>>>; // SObjectName => Id (old) => references (old)
+	private twoPassUpdateFieldData: Map<string, Map<string, Array<UpdateFieldMapping>>>; // SObjectName => Id (old) => Field KVP
 	private countImportErrorsRecords: number = 0;
 	private countImportErrorsSObjects: number = 0;
 
@@ -81,6 +92,7 @@ export class Importer {
 			// Set references for twoPassReferenceFields
 
 			this.twoPassReferenceFieldData = new Map<string, Map<string, Array<ReferenceFieldMapping>>>();
+			this.twoPassUpdateFieldData = new Map<string, Map<string, Array<UpdateFieldMapping>>>();
 
 			this.deleteAll(orgDestination)
 				.then((numberErrors: number) => {
@@ -277,6 +289,7 @@ export class Importer {
 
 						// Clear reference fields that will be set in second pass
 						const asArray = (param: string | string[]) => {
+							Util.writeLog(`asArray: [${JSON.stringify(param)}]`, LogLevel.TRACE);
 							return typeof param === "string" ? [param] : param;
 						};
 						asArray(orgDestination.settings.getSObjectData(sObjName).twoPassReferenceFields).forEach((fieldName: string) => {
@@ -292,6 +305,23 @@ export class Importer {
 									sObjectData.set(record.Id, mappings);
 								}
 								mappings.push(new ReferenceFieldMapping(fieldName, record[fieldName]));
+								delete record[fieldName];
+							}
+						});
+						
+						asArray(orgDestination.settings.getSObjectData(sObjName).twoPassUpdateFields).forEach((fieldName: string) => {
+							if (record[fieldName] !== null && record[fieldName] !== undefined) {
+								let sObjectData = this.twoPassUpdateFieldData.get(sObjName);
+								if (sObjectData === undefined) {
+									sObjectData = new Map<string, Array<UpdateFieldMapping>>();
+									this.twoPassUpdateFieldData.set(sObjName, sObjectData);
+								}
+								let mappings = sObjectData.get(record.Id);
+								if (mappings === undefined) {
+									mappings = new Array<UpdateFieldMapping>();
+									sObjectData.set(record.Id, mappings);
+								}
+								mappings.push(new UpdateFieldMapping(fieldName, record[fieldName]));
 								delete record[fieldName];
 							}
 						});
@@ -371,7 +401,9 @@ export class Importer {
 			// WARNING: Salesforce Bulk has a weird behavior that if the options are not given,
 			// WARNING: then the rest of the parameters are shifted to the left rather than taking null as a placeholder.
 			const bulkOptions: BulkOptions = { concurrencyMode: "Parallel", extIdField: null };
-			const keys: Array<string> = Array.from(this.twoPassReferenceFieldData.keys());
+			const keys: Array<string> = Array.from(new Set([...this.twoPassReferenceFieldData.keys(), ...this.twoPassUpdateFieldData.keys()]));
+
+			Util.writeLog(`[${orgDestination.alias}] KEYS: [${JSON.stringify(keys)}]`, LogLevel.TRACE);
 
 			Util.serialize(
 				this,
@@ -382,7 +414,6 @@ export class Importer {
 						Util.writeLog(`[${orgDestination.alias}] Updating references for [${sObjectName}] (${index + 1} of ${keys.length})`, LogLevel.TRACE);
 
 						const schemaData = orgDestination.discovery.getSObjects().get(sObjectName);
-						let records = [];
 
 						let baseRecord = {};
 						schemaData.twoPassParents.forEach((parent) => {
@@ -399,23 +430,49 @@ export class Importer {
 							}
 						});
 
-						// Create an object for each record that has one or more fields that need to be updated
-						this.twoPassReferenceFieldData.get(sObjectName).forEach((mappings: Array<ReferenceFieldMapping>, id: string) => {
-							let record = Object.assign({ Id: this.matchingIds.get(sObjectName).get(id) }, baseRecord);
-							mappings.forEach((mapping: ReferenceFieldMapping) => {
-								const destinationId = availableMatchingIds.get(mapping.fieldName).get(mapping.sourceId);
-								if (destinationId !== undefined) {
-									record[mapping.fieldName] = destinationId;
-									Util.writeLog(`[${orgDestination.alias}] mapping field [${mapping.fieldName}] for [${id}]:[ ${mapping.sourceId}] => [${destinationId}]`, LogLevel.TRACE);
-								} else {
-									Util.writeLog(`[${orgDestination.alias}] mapping data for [${mapping.fieldName}] did not include mapping for [${mapping.sourceId}]`, LogLevel.INFO);
-								}
-							});
-							records.push(record);
-						});
+						let records = new Map<string, Object>();
 
+						// Create an object for each record that has one or more reference fields that need to be updated
+						let referenceFieldsForObject = this.twoPassReferenceFieldData.get(sObjectName);
+						if (referenceFieldsForObject) {
+							referenceFieldsForObject.forEach((mappings: Array<ReferenceFieldMapping>, id: string) => {
+								let record = Object.assign({ Id: this.matchingIds.get(sObjectName).get(id) }, baseRecord);
+								mappings.forEach((mapping: ReferenceFieldMapping) => {
+									const destinationId = availableMatchingIds.get(mapping.fieldName).get(mapping.sourceId);
+									if (destinationId !== undefined) {
+										record[mapping.fieldName] = destinationId;
+										Util.writeLog(`[${orgDestination.alias}] mapping field [${mapping.fieldName}] for [${id}]:[ ${mapping.sourceId}] => [${destinationId}]`, LogLevel.TRACE);
+									} else {
+										Util.writeLog(`[${orgDestination.alias}] mapping data for [${mapping.fieldName}] did not include mapping for [${mapping.sourceId}]`, LogLevel.INFO);
+									}
+								});
+
+								records.set(id, record);
+							});
+						}
+						
+						// Create or update the object for each record that has one or more value fields that need to be udpated
+						let updateFieldsForObject = this.twoPassUpdateFieldData.get(sObjectName);
+						if (updateFieldsForObject) {
+							updateFieldsForObject.forEach((mappings: Array<UpdateFieldMapping>, id: string) => {
+								let record = records.has(id) ? records.get(id) : Object.assign({ Id: this.matchingIds.get(sObjectName).get(id) }, {}); 
+								Util.writeLog(`[${orgDestination.alias}] prepping record for update [${id}]: [${JSON.stringify(record)}] => [${JSON.stringify(records[id])}]`, LogLevel.TRACE);
+
+								mappings.forEach((mapping: UpdateFieldMapping) => {
+									Util.writeLog(`[${orgDestination.alias}] adding field for update [${id}]:[ ${mapping.name}] => [${mapping.value}]`, LogLevel.TRACE);
+									record[mapping.name] = mapping.value;
+								});
+								
+								records.set(id, record);
+							});
+						}
+
+						const recordsToUpdate = [...records.values()];
+
+						Util.writeLog(`[${orgDestination.alias}] [${sObjectName}] recordsToUpdate: ${JSON.stringify(recordsToUpdate)}`, LogLevel.TRACE);
+						
 						// Update the records using the bulk api
-						orgDestination.conn.bulk.load(sObjectName, "update", bulkOptions, records, (error, results: any[]) => {
+						orgDestination.conn.bulk.load(sObjectName, "update", bulkOptions, recordsToUpdate, (error, results: any[]) => {
 							let badCount: number = 0;
 							let goodCount: number = 0;
 
@@ -426,11 +483,11 @@ export class Importer {
 							for (let i = 0; i < results.length; i++) {
 								if (results[i].success) {
 									goodCount++;
-									Util.writeLog(`[${orgDestination.alias}] Successfully updated references in [${sObjectName}] record #${i + 1}, old Id [${records[i].Id}]`, LogLevel.TRACE);
+									Util.writeLog(`[${orgDestination.alias}] Successfully updated references in [${sObjectName}] record #${i + 1}, old Id [${recordsToUpdate[i].Id}]`, LogLevel.TRACE);
 								} else {
 									badCount++;
 									Util.writeLog(
-										`[${orgDestination.alias}] Error updating references in [${sObjectName}] record #${i + 1}, old Id [${records[i].Id}]` + JSON.stringify(results[i].errors),
+										`[${orgDestination.alias}] Error updating references in [${sObjectName}] record #${i + 1}, old Id [${recordsToUpdate[i].Id}]` + JSON.stringify(results[i].errors),
 										LogLevel.TRACE
 									);
 								}
@@ -444,12 +501,12 @@ export class Importer {
 					});
 				}
 			)
-				.then(() => {
-					resolve();
-				})
-				.catch((err) => {
-					reject(err);
-				});
+			.then(() => {
+				resolve();
+			})
+			.catch((err) => {
+				reject(err);
+			});
 		});
 	}
 
