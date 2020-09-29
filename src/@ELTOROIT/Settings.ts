@@ -90,6 +90,8 @@ export class Settings implements ISettingsValues {
 	public rootFolderRaw: string;
 	public rootFolderFull: string;
 	public configfolder: string;
+	public forceProductionCopy: boolean;
+	public forceProductionDeletion: boolean;
 
 	// Local private variables
 	private configFile: ConfigFile<ConfigFile.Options> = null;
@@ -412,11 +414,17 @@ export class Settings implements ISettingsValues {
 					);
 
 					// deleteDestination
-					promises.push(
-						this.processStringValues(resValues, "deleteDestination", false).then((value: string) => {
-							this.deleteDestination = value === "true";
-						})
-					);
+					if (overrideSettings.deleteDestination) {
+						msg = `Configuration value for [deleteDestination] read from command line: ${overrideSettings.deleteDestination}`;
+						this.deleteDestination = overrideSettings.deleteDestination;
+						Util.writeLog(msg, LogLevel.INFO);
+					} else {
+						promises.push(
+							this.processStringValues(resValues, "deleteDestination", false).then((value: string) => {
+								this.deleteDestination = value === "true";
+							})
+						);
+					}
 
 					// pollingTimeout
 					promises.push(
@@ -424,6 +432,9 @@ export class Settings implements ISettingsValues {
 							this.pollingTimeout = parseInt(value, 10);
 						})
 					);
+
+					this.forceProductionCopy = overrideSettings.forceProductionCopy;
+					this.forceProductionDeletion = overrideSettings.forceProductionDeletion;
 
 					Promise.all(promises)
 						.then(() => {
