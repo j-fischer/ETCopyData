@@ -4,7 +4,7 @@ NOTE: This is a fork of the [original project of ETCopyData](https://github.com/
 
 SFDX Plugin to populate your orgs with data extracted from multiple sObjects.
 
-[![Version](https://img.shields.io/npm/v/etcopydata.svg)](https://npmjs.org/package/etcopydata) [![License](https://img.shields.io/npm/l/etcopydata.svg)](https://github.com/j-fischer/ETCopyData/blob/master/package.json)
+[![Version](https://img.shields.io/npm/v/@j-fischer/etcopydata.svg)](https://npmjs.org/package/@jfischer/etcopydata) [![License](https://img.shields.io/npm/l/j-fischer-etcopydata.svg)](https://github.com/j-fischer/ETCopyData/blob/master/package.json)
 
 <!-- ET-AUTO-START: This section is auto-updated... -->
 <!-- toc -->
