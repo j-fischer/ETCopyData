@@ -1,5 +1,5 @@
 {
-	"name": "@jfischer/etcopydata",
+	"name": "@j-fischer/etcopydata",
 	"description": "SFDX Plugin to populate an org with data for multiple related sObjects.",
 	"version": "0.6.0",
 	"author": "Johannes Fischer",
