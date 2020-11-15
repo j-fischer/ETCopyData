@@ -73,6 +73,8 @@ This plugin is highly configurable with a JSON file named `ETCopyData.json` loca
     "rootFolder": "./ETCopyData",
 	"includeAllCustom": true,
 	"stopOnErrors": true,
+	"copyToProduction": false,
+	"useBulkAPI": false,
 	"ignoreFields": "OwnerId, CreatedBy, CreatedDate, CurrencyIsoCode",
 	"maxRecordsEach": null,
 	"deleteDestination": true,
@@ -92,6 +94,8 @@ This plugin is highly configurable with a JSON file named `ETCopyData.json` loca
 | **rootFolder** | String | Folder used to store the exported data and where the data will be imported from. |
 | **includeAllCustom** | Boolean | True if you want all the customer sObjects, false if you only want the ones listed in the orgDestination section |
 | **stopOnErrors** | Boolean | True if you want to stop on errors deleting data or importing data, false and the errors will be reported back but they will not stop the execution. |
+| **copyToProduction** | Boolean | True if you want to import data to production, false if importing to a production org should throw an error. |
+| **useBulkAPI** | Boolean | True if you want to use the Bulk API for insert/upsert/update import requests, false if you want to use the SOAP API for insert/upsert/update import requests. |
 | **ignoreFields<sup>4</sup>** | String | List of fields to ignore for every sObject, each field is separated with a comma. Example: "Field1**c, Field2**c, Field\_\_3" |
 | **maxRecordsEach<sup>5</sup>** | Integer | What is the maximum number of records to export for each sObject |
 | **deleteDestination<sup>6</sup>** | Boolean | True if you want to delete the existing records in the destination org before you load the new records. |
