@@ -29,7 +29,7 @@ SFDX Plugin to populate your orgs with data extracted from multiple sObjects.
 
 ## Install as plugin
 
-`sfdx plugins:install etcopydata`
+`sfdx plugins:install @jfischer/etcopydata`
 
 You'll be prompted that this, like any plugin, is not officially code-signed by Salesforce. If that's annoying, you can [whitelist it](https://developer.salesforce.com/blogs/2017/10/salesforce-dx-cli-plugin-update.html)
 
