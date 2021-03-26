@@ -1,4 +1,4 @@
-import { BulkOptions, Date, RecordResult } from "jsforce";
+import { BulkOptions, Date, RecordResult, RestApiOptions } from "jsforce";
 import { ISchemaDataParent } from "./Interfaces";
 import { OrgManager } from "./OrgManager";
 import { LogLevel, ResultOperation, Util } from "./Util";
@@ -102,7 +102,7 @@ export class Importer {
 					this.countImportErrorsRecords = 0;
 					this.countImportErrorsSObjects = 0;
 					const sObjectsToLoad: string[] = orgDestination.order.findImportOrder();
-					Util.writeLog("sObjects should be processed in this order: " + sObjectsToLoad, LogLevel.TRACE);
+					Util.writeLog("sObjects should be processed in this order: " + sObjectsToLoad.join(", "), LogLevel.TRACE);
 					return this.loadAllSObjectData(orgSource, orgDestination, sObjectsToLoad, 0);
 				})
 				.then(() => {
@@ -328,17 +328,7 @@ export class Importer {
 					});
 
 					if (records.length > 0) {
-						// LOADING
-						this.matchingIds.set(sObjName, new Map<string, string>());
-						orgDestination.conn.bulk.pollTimeout = orgDestination.settings.pollingTimeout;
-						// WARNING: Salesforce Bulk has a weird behavior that if the options are not given,
-						// WARNING: then the rest of the parameters are shifted to the left rather than taking null as a placeholder.
-						const bulkOptions: BulkOptions = { concurrencyMode: "Parallel", extIdField: orgDestination.settings.getSObjectData(sObjName).externalIdField || null };
-						// LEARNING: Inserting sObject records in bulk
-						const operation = orgDestination.settings.getSObjectData(sObjName).externalIdField ? "upsert" : "insert";
-						Util.writeLog(`Importing [${sObjName}] using [${operation}] with options [${JSON.stringify(bulkOptions)}]`, LogLevel.DEBUG);
-
-						orgDestination.conn.bulk.load(sObjName, operation, bulkOptions, this.getRecordsForOperation(records, operation), (error, results: any[]) => {
+						const processResults = (error, results: any[]) => {
 							let badCount: number = 0;
 							let goodCount: number = 0;
 
@@ -372,7 +362,30 @@ export class Importer {
 							Util.logResultsAdd(orgDestination, ResultOperation.IMPORT, sObjName, goodCount, badCount);
 
 							resolve(badCount);
-						});
+						};
+
+						// LOADING
+						this.matchingIds.set(sObjName, new Map<string, string>());
+						// ELTOROIT: Bulk or SOAP?
+						const operation = orgDestination.settings.getSObjectData(sObjName).externalIdField ? "upsert" : "insert";
+						if (orgDestination.settings.useBulkAPI) {
+							// WARNING: Salesforce Bulk has a weird behavior that if the options are not given,
+							// WARNING: then the rest of the parameters are shifted to the left rather than taking null as a placeholder.
+							orgDestination.conn.bulk.pollTimeout = orgDestination.settings.pollingTimeout;
+							const options: BulkOptions = { concurrencyMode: "Parallel", extIdField: orgDestination.settings.getSObjectData(sObjName).externalIdField || null };
+
+							Util.writeLog(`Importing [${sObjName}] using [${operation}] with options [${JSON.stringify(options)}]`, LogLevel.DEBUG);
+							
+							// LEARNING: Inserting sObject records in bulk
+							orgDestination.conn.bulk.load(sObjName, operation, options, this.getRecordsForOperation(records, operation), processResults);
+						} else {
+							const options: RestApiOptions = { allOrNone: true, allowRecursive: true };
+							if (operation === "insert") {
+								orgDestination.conn.sobject(sObjName).create(records, options, processResults);
+							} else {
+								orgDestination.conn.sobject(sObjName).upsert(records, orgDestination.settings.getSObjectData(sObjName).externalIdField, options, processResults);
+							}
+						}
 					} else {
 						resolve(0);
 					}
@@ -400,7 +413,6 @@ export class Importer {
 		return new Promise((resolve, reject) => {
 			// WARNING: Salesforce Bulk has a weird behavior that if the options are not given,
 			// WARNING: then the rest of the parameters are shifted to the left rather than taking null as a placeholder.
-			const bulkOptions: BulkOptions = { concurrencyMode: "Parallel", extIdField: null };
 			const keys: Array<string> = Array.from(new Set([...this.twoPassReferenceFieldData.keys(), ...this.twoPassUpdateFieldData.keys()]));
 
 			Util.writeLog(`[${orgDestination.alias}] KEYS: [${JSON.stringify(keys)}]`, LogLevel.TRACE);
@@ -471,8 +483,8 @@ export class Importer {
 
 						Util.writeLog(`[${orgDestination.alias}] [${sObjectName}] recordsToUpdate: ${JSON.stringify(recordsToUpdate)}`, LogLevel.TRACE);
 						
-						// Update the records using the bulk api
-						orgDestination.conn.bulk.load(sObjectName, "update", bulkOptions, recordsToUpdate, (error, results: any[]) => {
+						// UPDATING the records
+						const processResults = (error, results: any[]) => {
 							let badCount: number = 0;
 							let goodCount: number = 0;
 
@@ -497,7 +509,16 @@ export class Importer {
 							Util.logResultsAdd(orgDestination, ResultOperation.IMPORT, sObjectName, goodCount, badCount);
 
 							resolveEach();
-						});
+						};
+
+						// ELTOROIT: Bulk or SOAP?
+						if (orgDestination.settings.useBulkAPI) {
+							const bulkOptions: BulkOptions = { concurrencyMode: "Parallel", extIdField: null };
+							orgDestination.conn.bulk.load(sObjectName, "update", bulkOptions, recordsToUpdate, processResults);
+						} else {
+							const options: RestApiOptions = { allOrNone: true, allowRecursive: true };
+							orgDestination.conn.sobject(sObjectName).update(recordsToUpdate, options, processResults);
+						}
 					});
 				}
 			)
