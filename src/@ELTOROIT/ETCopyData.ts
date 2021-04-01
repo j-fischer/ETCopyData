@@ -5,7 +5,7 @@ import { Exporter } from "./Exporter";
 import { Importer } from "./Importer";
 import { ISchemaData } from "./Interfaces";
 import { OrgManager, WhichOrg } from "./OrgManager";
-import { Settings } from "./Settings";
+import { ISettingsSObjectData, Settings } from "./Settings";
 import { LogLevel, ResultOperation, Util } from "./Util";
 
 interface IETCopyData {
@@ -403,6 +403,7 @@ export class ETCopyData {
 			const orgLoginUrl: string = org.conn.getAuthInfoFields().loginUrl;
 			const orgDomain: string = orgLoginUrl.split("/")[2];
 			const isProductionOrg: boolean = orgDomain.toUpperCase() === productionLoginUrl.toUpperCase();
+			const hasObjectLevelDeletionConfigured: boolean = Array.from(data.settings.sObjectsDataRaw.values()).some((objSettings: ISettingsSObjectData) => objSettings.deleteDestination === true);
 
 			if (isProductionOrg) {
 				if (data.settings.includeAllCustom) {
@@ -411,7 +412,10 @@ export class ETCopyData {
 					Util.throwError(msg);
 					reject(msg);
 				} else if (data.settings.copyToProduction) {
-					if (data.settings.deleteDestination && !data.settings.forceProductionDeletion) {
+					if (!data.settings.forceProductionDeletion && (
+							data.settings.deleteDestination ||	
+							hasObjectLevelDeletionConfigured
+						)) {
 						const msg = "Cannot delete production data unless the --forceproddeletion flag is provided.";
 						Util.writeLog(msg, LogLevel.FATAL);
 						Util.throwError(msg);
