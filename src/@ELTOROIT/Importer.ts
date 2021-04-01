@@ -2,6 +2,7 @@ import { BulkOptions, Date, RecordResult, RestApiOptions } from "jsforce";
 import { ISchemaDataParent } from "./Interfaces";
 import { OrgManager } from "./OrgManager";
 import { LogLevel, ResultOperation, Util } from "./Util";
+import { ISettingsSObjectData } from "./Settings";
 
 class ReferenceFieldMapping {
 	public fieldName: string;
@@ -33,13 +34,26 @@ export class Importer {
 		let countErrorsRecords: number = 0;
 		let countErrorsSObjects: number = 0;
 		return new Promise((resolve, reject) => {
-			if (orgDestination.settings.deleteDestination) {
+			const objectsToDeleteBeforeLoading: String[] = 
+				Array.from(orgDestination.settings.sObjectsDataRaw.values())
+					.filter((objSettings: ISettingsSObjectData) => objSettings.deleteDestination === true)
+					.map((objSettings: ISettingsSObjectData) => objSettings.name);
+
+			Util.writeLog(`[${orgDestination.alias}] Objects to delete before loading: ` + objectsToDeleteBeforeLoading.join(", "), LogLevel.TRACE);		
+
+			if (orgDestination.settings.deleteDestination || objectsToDeleteBeforeLoading.length > 0) {
 				const sObjectsToLoad: string[] = orgDestination.order.findImportOrder();
 				const sObjectsToLoadReversed: string[] = sObjectsToLoad.slice(0).reverse();
 
+				const objectsToDelete = orgDestination.settings.deleteDestination ?
+					sObjectsToLoadReversed :
+					sObjectsToLoadReversed.filter((name: string) => objectsToDeleteBeforeLoading.includes(name));
+
+				Util.writeLog(`[${orgDestination.alias}] Objects to delete: ` + objectsToDelete.join(", "), LogLevel.INFO);
+
 				Util.serialize(
 					this,
-					sObjectsToLoadReversed,
+					objectsToDelete,
 					(index): Promise<void> => {
 						return new Promise((resolveEach, rejectEach) => {
 							const sObjName = sObjectsToLoadReversed[index];
