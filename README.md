@@ -108,14 +108,15 @@ You must provide the name of the sObject
 
 ```
 {
-	"name": "Location__c",
-	"externalIdField": "External_Id_Field__c",
-	"ignoreFields": "OwnerId, IgnoreField__c",
-	"maxRecords": 50,
-	"orderBy": "City__c",
-    "twoPassReferenceFields": "Foo__c,Bar__c",
-	"twoPassUpdateFields": "Not_a_Lookup_Field__c,A_Text_Field__c",
-	"where": "State__c = 'Texas'"
+  "name": "Location__c",
+  "deleteDestination": false,
+  "externalIdField": "External_Id_Field__c",
+  "ignoreFields": "OwnerId, IgnoreField__c",
+  "maxRecords": 50,
+  "orderBy": "City__c",
+  "twoPassReferenceFields": "Foo__c,Bar__c",
+  "twoPassUpdateFields": "Not_a_Lookup_Field__c,A_Text_Field__c",
+  "where": "State__c = 'Texas'"
 }
 ```
 
@@ -126,6 +127,7 @@ This is the structure for each sObject
 | Field                  | Default | Data Type | Description                                                                                                                |
 | ---------------------- | ------- | --------- | -------------------------------------------------------------------------------------------------------------------------- |
 | name                   | N/A     | String    | Required field. SObject API name rather than the label, which means that custom sObjects end with \_\_c.                   |
+| deleteDestination      | false   | Boolean   | If `true` will delete all records of the object prior to importing the data.                                               |
 | ignoreFields           | null    | String[]  | List of fields to ignore for every sObject, these list will be combined with the global **ignoreFields** field.            |
 | maxRecords             | -1      | Integer   | Overrides the global **maxRecordsEach** field.                                                                             |
 | orderBy                | null    | String    | For exports, determines the order for the records that are exported.                                                       |
