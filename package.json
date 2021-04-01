@@ -57,8 +57,8 @@
 	"scripts": {
 		"postpack": "del /F/Q oclif.manifest.json npm-shrinkwrap.json",
 		"posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
-		"prepack": "del /F/Q lib && tsc && oclif-dev manifest && oclif-dev readme && npm shrinkwrap",
-		"prepare": "del /F/Q lib && tsc && oclif-dev manifest && oclif-dev readme && npm shrinkwrap",
+		"prepack": "oclif-dev readme && npm shrinkwrap",
+		"prepare": "del /F/Q lib && tsc && oclif-dev manifest",
 		"test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
 		"version": "oclif-dev readme && git add README.md"
 	}
