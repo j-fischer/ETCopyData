@@ -13,7 +13,6 @@ SFDX Plugin to populate your orgs with data extracted from multiple sObjects.
 * [Documentation](#documentation)
 * [Commands](#commands)
 <!-- tocstop -->
-<!-- tocstop -->
 <!-- ET-AUTO-STOP: This section is auto-updated... -->
 
 # Install
@@ -259,7 +258,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\Compare.ts](https://github.com/j-fischer/ETCopyData/blob/v0.7.0/src\commands\ETCopyData\Compare.ts)_
+_See code: [src\commands\ETCopyData\Compare.ts](https://github.com/j-fischer/ETCopyData/blob/v0.8.0/src\commands\ETCopyData\Compare.ts)_
 
 ## `sfdx ETCopyData:delete [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -294,7 +293,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\delete.ts](https://github.com/j-fischer/ETCopyData/blob/v0.7.0/src\commands\ETCopyData\delete.ts)_
+_See code: [src\commands\ETCopyData\delete.ts](https://github.com/j-fischer/ETCopyData/blob/v0.8.0/src\commands\ETCopyData\delete.ts)_
 
 ## `sfdx ETCopyData:export [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -329,7 +328,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\export.ts](https://github.com/j-fischer/ETCopyData/blob/v0.7.0/src\commands\ETCopyData\export.ts)_
+_See code: [src\commands\ETCopyData\export.ts](https://github.com/j-fischer/ETCopyData/blob/v0.8.0/src\commands\ETCopyData\export.ts)_
 
 ## `sfdx ETCopyData:full [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -364,7 +363,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\full.ts](https://github.com/j-fischer/ETCopyData/blob/v0.7.0/src\commands\ETCopyData\full.ts)_
+_See code: [src\commands\ETCopyData\full.ts](https://github.com/j-fischer/ETCopyData/blob/v0.8.0/src\commands\ETCopyData\full.ts)_
 
 ## `sfdx ETCopyData:import [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -399,7 +398,6 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\import.ts](https://github.com/j-fischer/ETCopyData/blob/v0.7.0/src\commands\ETCopyData\import.ts)_
-<!-- commandsstop -->
+_See code: [src\commands\ETCopyData\import.ts](https://github.com/j-fischer/ETCopyData/blob/v0.8.0/src\commands\ETCopyData\import.ts)_
 <!-- commandsstop -->
 <!-- ET-AUTO-STOP: This section is auto-updated... -->
