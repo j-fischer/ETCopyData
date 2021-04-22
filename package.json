@@ -1,7 +1,7 @@
 {
 	"name": "@jfischer/etcopydata",
 	"description": "SFDX Plugin to populate an org with data for multiple related sObjects.",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"author": "Johannes Fischer",
 	"bugs": "https://github.com/j-fischer/ETCopyData/issues",
 	"dependencies": {
