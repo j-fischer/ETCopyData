@@ -350,6 +350,10 @@ export class Importer {
 								reject(error);
 							}
 
+							if (!results) {
+								reject('Result has not been defined: sObjName=' + sObjName);
+							}
+
 							// NOTE: I need a traditional loop because the index (i) will be used in two lists of same size and same order.
 							for (let i = 0; i < results.length; i++) {
 								msg = "";
@@ -514,7 +518,7 @@ export class Importer {
 									badCount++;
 									Util.writeLog(
 										`[${orgDestination.alias}] Error updating references in [${sObjectName}] record #${i + 1}, old Id [${recordsToUpdate[i].Id}]` + JSON.stringify(results[i].errors),
-										LogLevel.TRACE
+										LogLevel.ERROR
 									);
 								}
 							}
