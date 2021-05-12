@@ -40,6 +40,10 @@ export class ETCopyData {
 		}),
 		forceproddeletion: flags.boolean({
 			description: 'Force the deletion of to production data'
+		}),
+		overrideconfig: flags.boolean({
+			char: "o",
+			description: 'Will override the existing config file, adding new properties, etc.'
 		})
 	};
 
@@ -84,6 +88,10 @@ export class ETCopyData {
 		if (params.forceproddeletion) {
 			Util.writeLog(`Parameter: forceproddeletion [${params.forceproddeletion}]`, LogLevel.TRACE);
 			s.forceProductionDeletion = true;
+		}
+		if (params.overrideconfig) {
+			Util.writeLog(`Parameter: overrideconfig [${params.overrideconfig}]`, LogLevel.TRACE);
+			s.overrideConfig = true;
 		}
 		return s;
 	}
