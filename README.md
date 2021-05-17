@@ -224,6 +224,7 @@ If your dataset contains 1000 A**c records and 10 B**c records, the optimal conf
 * [`sfdx ETCopyData:export [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-etcopydataexport--c-string--d-string--s-string--r---forceprodcopy---forceproddeletion--o---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfdx ETCopyData:full [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-etcopydatafull--c-string--d-string--s-string--r---forceprodcopy---forceproddeletion--o---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 * [`sfdx ETCopyData:import [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-etcopydataimport--c-string--d-string--s-string--r---forceprodcopy---forceproddeletion--o---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
+* [`sfdx ETCopyData:truncate [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`](#sfdx-etcopydatatruncate--c-string--d-string--s-string--r---forceprodcopy---forceproddeletion--o---json---loglevel-tracedebuginfowarnerrorfataltracedebuginfowarnerrorfatal)
 
 ## `sfdx ETCopyData:Compare [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -261,7 +262,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\Compare.ts](https://github.com/j-fischer/ETCopyData/blob/v0.9.0/src\commands\ETCopyData\Compare.ts)_
+_See code: [src\commands\ETCopyData\Compare.ts](https://github.com/j-fischer/ETCopyData/blob/v0.10.0/src\commands\ETCopyData\Compare.ts)_
 
 ## `sfdx ETCopyData:delete [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -299,7 +300,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\delete.ts](https://github.com/j-fischer/ETCopyData/blob/v0.9.0/src\commands\ETCopyData\delete.ts)_
+_See code: [src\commands\ETCopyData\delete.ts](https://github.com/j-fischer/ETCopyData/blob/v0.10.0/src\commands\ETCopyData\delete.ts)_
 
 ## `sfdx ETCopyData:export [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -337,7 +338,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\export.ts](https://github.com/j-fischer/ETCopyData/blob/v0.9.0/src\commands\ETCopyData\export.ts)_
+_See code: [src\commands\ETCopyData\export.ts](https://github.com/j-fischer/ETCopyData/blob/v0.10.0/src\commands\ETCopyData\export.ts)_
 
 ## `sfdx ETCopyData:full [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -375,7 +376,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\full.ts](https://github.com/j-fischer/ETCopyData/blob/v0.9.0/src\commands\ETCopyData\full.ts)_
+_See code: [src\commands\ETCopyData\full.ts](https://github.com/j-fischer/ETCopyData/blob/v0.10.0/src\commands\ETCopyData\full.ts)_
 
 ## `sfdx ETCopyData:import [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -413,6 +414,44 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\import.ts](https://github.com/j-fischer/ETCopyData/blob/v0.9.0/src\commands\ETCopyData\import.ts)_
+_See code: [src\commands\ETCopyData\import.ts](https://github.com/j-fischer/ETCopyData/blob/v0.10.0/src\commands\ETCopyData\import.ts)_
+
+## `sfdx ETCopyData:truncate [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
+
+Truncate data into destination org, based on the configuration in the JSON file. The data load happens in a specific order (children first, parents last) which has been determined by checking the schema in the destination org.
+
+```
+USAGE
+  $ sfdx ETCopyData:truncate [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] 
+  [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]
+
+OPTIONS
+  -c, --configfolder=PATH                                                           Root folder to find the
+                                                                                    configuration file
+
+  -d, --orgdestination=(alias|username)                                             SFDX alias or username for the
+                                                                                    DESTINATION org
+
+  -o, --overrideconfig                                                              Will override the existing config
+                                                                                    file, adding new properties, etc.
+
+  -r, --deletedestination                                                           Delete records in destination org
+                                                                                    prior to data loads
+
+  -s, --orgsource=(alias|username)                                                  SFDX alias or username for the
+                                                                                    SOURCE org
+
+  --forceprodcopy                                                                   Force the copy to production
+
+  --forceproddeletion                                                               Force the deletion of to production
+                                                                                    data
+
+  --json                                                                            format output as json
+
+  --loglevel=(trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL)  [default: warn] logging level for
+                                                                                    this command invocation
+```
+
+_See code: [src\commands\ETCopyData\truncate.ts](https://github.com/j-fischer/ETCopyData/blob/v0.10.0/src\commands\ETCopyData\truncate.ts)_
 <!-- commandsstop -->
 <!-- ET-AUTO-STOP: This section is auto-updated... -->
