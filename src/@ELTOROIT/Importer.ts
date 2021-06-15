@@ -40,11 +40,13 @@ export class Importer {
 					.map((objSettings: ISettingsSObjectData) => objSettings.name);
 
 			Util.writeLog(`[${orgDestination.alias}] Objects to delete before loading: ` + objectsToDeleteBeforeLoading.join(", "), LogLevel.TRACE);		
-
+			
 			if (orgDestination.settings.deleteDestination || objectsToDeleteBeforeLoading.length > 0) {
 				const sObjectsToLoad: string[] = orgDestination.order.findImportOrder();
 				const sObjectsToLoadReversed: string[] = sObjectsToLoad.slice(0).reverse();
-
+				
+				Util.writeLog(`[${orgDestination.alias}] Objects to load reverse: ` + sObjectsToLoadReversed.join(", "), LogLevel.TRACE);		
+				
 				const objectsToDelete = orgDestination.settings.deleteDestination ?
 					sObjectsToLoadReversed :
 					sObjectsToLoadReversed.filter((name: string) => objectsToDeleteBeforeLoading.includes(name));
@@ -56,7 +58,7 @@ export class Importer {
 					objectsToDelete,
 					(index): Promise<void> => {
 						return new Promise((resolveEach, rejectEach) => {
-							const sObjName = sObjectsToLoadReversed[index];
+							const sObjName = objectsToDelete[index];
 							this.deleteOneBeforeLoading(orgDestination, sObjName)
 								.then((value: number) => {
 									countErrorsRecords += value;
