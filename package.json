@@ -9,7 +9,7 @@
 		"@oclif/errors": "1.3.4",
 		"@oclif/plugin-help": "3.2.0",
 		"@salesforce/command": "3.0.5",
-		"npm-check-updates": "10.0.0",
+		"npm-check-updates": "10.3.1",
 		"tslib": "^2.0.3"
 	},
 	"devDependencies": {
