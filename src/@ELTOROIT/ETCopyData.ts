@@ -107,7 +107,7 @@ export class ETCopyData {
 				});
 		}
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.SCHEMA)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -131,7 +131,7 @@ export class ETCopyData {
 				});
 		}
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.DELETE)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -161,7 +161,7 @@ export class ETCopyData {
 				});
 		}
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.EXPORT)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -200,7 +200,7 @@ export class ETCopyData {
 				});
 		}
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.IMPORT)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -224,7 +224,7 @@ export class ETCopyData {
 		let data: IETCopyData = null;
 
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.IMPORT)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -350,7 +350,7 @@ export class ETCopyData {
 		});
 	}
 
-	private initializeETCopy(overrideSettings: Settings, data: IETCopyData): Promise<IETCopyData> {
+	private initializeETCopy(overrideSettings: Settings, data: IETCopyData, operation: ResultOperation): Promise<IETCopyData> {
 		return new Promise((resolve, reject) => {
 			if (data) {
 				resolve(data);
