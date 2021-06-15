@@ -377,7 +377,11 @@ export class ETCopyData {
 						return this.setupOrg(data, WhichOrg.DESTINATION);
 					})
 					.then(() => {
-						return this.makeSureThisOrgIsSafe(data, data.orgs.get(WhichOrg.DESTINATION));
+						if (operation === ResultOperation.DELETE || operation === ResultOperation.IMPORT) {
+							return this.makeSureThisOrgIsSafe(data, data.orgs.get(WhichOrg.DESTINATION));
+						} else {
+							return Promise.resolve();
+						}
 					})
 					.then(() => {
 						this.compareSchemaForOrgs(data.orgs.get(WhichOrg.SOURCE), data.orgs.get(WhichOrg.DESTINATION));
