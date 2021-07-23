@@ -1,6 +1,6 @@
 import { ISchemaData, ISchemaDataParent } from "./Interfaces";
 import { OrgManager } from "./OrgManager";
-import { Util } from "./Util";
+import { LogLevel, Util } from "./Util";
 
 export class SchemaOrder {
 	private orgManager: OrgManager;
@@ -16,6 +16,8 @@ export class SchemaOrder {
 			this.importOrder = [];
 			let allSObjNames: string[] = this.getSObjNames();
 
+			Util.writeLog(`[${this.orgManager.alias}] All SObject names: ` + allSObjNames.join(", "), LogLevel.TRACE);		
+		
 			while (allSObjNames.length > 0) {
 				const sObjectsFound: string[] = this.findSObjectsWithoutParents(allSObjNames);
 				if (sObjectsFound.length === 0) {
