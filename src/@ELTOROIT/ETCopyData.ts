@@ -491,12 +491,12 @@ export class ETCopyData {
 			})
 				.then((resultSTR) => {
 					if (resultSTR === expected) {
-						resolve();
+						resolve(true);
 					} else {
 						// reject("Number expected was not entered");
 						this.RequestedNumberEntered(ux, counter + 1, message)
 							.then(() => {
-								resolve();
+								resolve(true);
 							})
 							.catch((err) => {
 								reject(err);
