@@ -203,6 +203,7 @@ export class Settings implements ISettingsValues {
 					strData = JSON.stringify(data);
 				}
 
+				Util.writeLog(`Writing results to ${fileName}`, LogLevel.TRACE);
 				fs.writeFile(fullPath + `/${fileName}`, strData)
 					.then(() => {
 						resolve();

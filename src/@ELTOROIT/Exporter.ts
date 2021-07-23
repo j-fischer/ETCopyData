@@ -92,16 +92,17 @@ export class Exporter {
 						const msg = `[${org.alias}] Queried [${sObjName}], retrieved ${data.total} records `;
 						Util.writeLog(msg, LogLevel.INFO);
 						Util.logResultsAdd(org, ResultOperation.EXPORT, sObjName, data.total, 0);
-
+						
 						// Checks....
 						Util.assertEquals(data.fetched, data.total, "Not all the records were fetched [1].");
 						Util.assertEquals(data.total, data.records.length, "Not all the records were fetched [2].");
-
+						
 						if (data.total >= 0) {
 							org.settings
 								.writeToFile(org.alias + folderCode, sObjName + ".json", data)
 								.then(() => {
 									// NOTE: Clean memory, and avoid heap dumps.
+									Util.writeLog(`[${org.alias}] Completed writing [${sObjName}] data to file`, LogLevel.DEBUG);
 									data.records = [];
 									// Now, resolve it.
 									resolve();
