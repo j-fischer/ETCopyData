@@ -64,7 +64,10 @@ export class Settings implements ISettingsValues {
 			s.resetValues();
 			s.readAll(overrideSettings)
 				.then((value: Settings) => {
-					return s.write();
+					if (s.overrideConfig) {
+						s.write();
+					}
+					return s;
 				})
 				.then((value) => {
 					resolve(s);
@@ -95,6 +98,7 @@ export class Settings implements ISettingsValues {
 	public configfolder: string;
 	public forceProductionCopy: boolean;
 	public forceProductionDeletion: boolean;
+	public overrideConfig: boolean;
 
 	// Local private variables
 	private configFile: ConfigFile<ConfigFile.Options> = null;
@@ -445,6 +449,7 @@ export class Settings implements ISettingsValues {
 
 					this.forceProductionCopy = overrideSettings.forceProductionCopy;
 					this.forceProductionDeletion = overrideSettings.forceProductionDeletion;
+					this.overrideConfig = overrideSettings.overrideConfig;
 
 					Promise.all(promises)
 						.then(() => {

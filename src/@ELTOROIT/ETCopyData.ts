@@ -40,6 +40,10 @@ export class ETCopyData {
 		}),
 		forceproddeletion: flags.boolean({
 			description: 'Force the deletion of to production data'
+		}),
+		overrideconfig: flags.boolean({
+			char: "o",
+			description: 'Will override the existing config file, adding new properties, etc.'
 		})
 	};
 
@@ -85,6 +89,10 @@ export class ETCopyData {
 			Util.writeLog(`Parameter: forceproddeletion [${params.forceproddeletion}]`, LogLevel.TRACE);
 			s.forceProductionDeletion = true;
 		}
+		if (params.overrideconfig) {
+			Util.writeLog(`Parameter: overrideconfig [${params.overrideconfig}]`, LogLevel.TRACE);
+			s.overrideConfig = true;
+		}
 		return s;
 	}
 
@@ -99,7 +107,7 @@ export class ETCopyData {
 				});
 		}
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.SCHEMA)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -123,7 +131,7 @@ export class ETCopyData {
 				});
 		}
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.DELETE)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -153,7 +161,7 @@ export class ETCopyData {
 				});
 		}
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.EXPORT)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -192,7 +200,7 @@ export class ETCopyData {
 				});
 		}
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.IMPORT)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -216,7 +224,7 @@ export class ETCopyData {
 		let data: IETCopyData = null;
 
 		return new Promise((resolve, reject) => {
-			this.initializeETCopy(overrideSettings, data)
+			this.initializeETCopy(overrideSettings, data, ResultOperation.IMPORT)
 				.then((value: IETCopyData) => {
 					data = value;
 				})
@@ -342,7 +350,7 @@ export class ETCopyData {
 		});
 	}
 
-	private initializeETCopy(overrideSettings: Settings, data: IETCopyData): Promise<IETCopyData> {
+	private initializeETCopy(overrideSettings: Settings, data: IETCopyData, operation: ResultOperation): Promise<IETCopyData> {
 		return new Promise((resolve, reject) => {
 			if (data) {
 				resolve(data);
@@ -369,7 +377,11 @@ export class ETCopyData {
 						return this.setupOrg(data, WhichOrg.DESTINATION);
 					})
 					.then(() => {
-						return this.makeSureThisOrgIsSafe(data, data.orgs.get(WhichOrg.DESTINATION));
+						if (operation === ResultOperation.DELETE || operation === ResultOperation.IMPORT) {
+							return this.makeSureThisOrgIsSafe(data, data.orgs.get(WhichOrg.DESTINATION));
+						} else {
+							return Promise.resolve();
+						}
 					})
 					.then(() => {
 						this.compareSchemaForOrgs(data.orgs.get(WhichOrg.SOURCE), data.orgs.get(WhichOrg.DESTINATION));
