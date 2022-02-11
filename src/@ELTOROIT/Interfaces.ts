@@ -6,6 +6,7 @@ interface ISchemaBase2 {
 	describeUrl: string;
 	keyPrefix: string;
 	orderBy: string;
+	isCustomSetting: boolean;
 }
 
 // NOTE: Metadata schema

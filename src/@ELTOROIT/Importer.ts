@@ -36,7 +36,7 @@ export class Importer {
 		return new Promise((resolve, reject) => {
 			const objectsToDeleteBeforeLoading: String[] = 
 				Array.from(orgDestination.settings.sObjectsDataRaw.values())
-					.filter((objSettings: ISettingsSObjectData) => objSettings.deleteDestination === true)
+					.filter((objSettings: ISettingsSObjectData) => objSettings.deleteDestination === true || orgDestination.discovery.getSObjects().get(objSettings.name).isCustomSetting)
 					.map((objSettings: ISettingsSObjectData) => objSettings.name);
 
 			Util.writeLog(`[${orgDestination.alias}] Objects to delete before loading: ` + objectsToDeleteBeforeLoading.join(", "), LogLevel.TRACE);		
