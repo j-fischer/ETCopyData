@@ -167,7 +167,7 @@ This is the structure for each metadata sObject
 | ------------------- | ------- | --------- | ------------------------------------------------------------------------------- |
 | name                | N/A     | String    | Required field. SObject API name rather than the label.                         |
 | fieldsToExport      | N/A     | String[]  | Required field. List of fields that will be exported for each metadata sObject. |
-| matchBy<sup>9</sup> | N/A     | STring    | Required field. What makes the two metadata sObjects the same?                  |
+| matchBy<sup>9</sup> | N/A     | String    | Required field. What makes the two metadata sObjects the same?                  |
 | orderBy             | null    | String    | For exports, determines the order for the metadata records that are exported.   |
 | where               | null    | String    | Restrict which records are be exported.                                         |
 
