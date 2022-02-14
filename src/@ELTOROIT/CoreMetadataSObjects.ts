@@ -99,6 +99,7 @@ export class CoreMetadataSObjects {
 						name: sObjName,
 						orderBy: sObj.orderBy,
 						where: null,
+						isCustomSetting: false
 					});
 				});
 		}
