@@ -171,6 +171,26 @@ This is the structure for each metadata sObject
 | orderBy             | null    | String    | For exports, determines the order for the metadata records that are exported.   |
 | where               | null    | String    | Restrict which records are be exported.                                         |
 
+## Migrating Custom Settings
+
+The tool supports the migration of Custom Settings. To handle the proper mapping of possible owners (User, Profile) of Hierarchical Custom Settings, it is important to
+to have the following configuration for the metadata objects added to the `ETCopyData.json` file:
+
+```
+"sObjectsMetadata": [
+    {
+        "name": "User",
+        "fieldsToExport": "FirstName,LastName,Email,Id",
+        "matchBy": "Email"
+    },
+    {
+      "name": "Profile",
+      "fieldsToExport": "Name,Id",
+      "matchBy": "Name"
+    }
+]
+```
+
 ## References
 
 ETCopyData fully supports importing references between SObjects, both Lookup and Parent/Child relationships.
