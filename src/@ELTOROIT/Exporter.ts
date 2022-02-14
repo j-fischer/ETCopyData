@@ -129,7 +129,11 @@ export class Exporter {
 		} else {
 			const sObjSettings = org.settings.getSObjectData(sObjName);
 
-			soql += "SELECT " + org.discovery.getFields(sObjName) + " ";
+			soql += "SELECT " + org.discovery.getFields(sObjName);
+			if (org.discovery.getSObjects().get(sObjName).isCustomSetting) {
+				soql += ",SetupOwnerId";
+			}
+			soql += " ";
 			soql += "FROM " + sObjName + " ";
 			if (sObjSettings.where != null) {
 				soql += "WHERE " + sObjSettings.where + " ";
