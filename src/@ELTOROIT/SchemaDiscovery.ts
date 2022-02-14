@@ -222,18 +222,9 @@ export class SchemaDiscovery {
 		if (this.orgManager.coreMD.isMD(sObj.name)) {
 			this.orgManager.coreMD.setValues(sObj);
 		} else {
-			//   // Helps find the desired sObject
-			//   console.log(sObj.name);
-			//   if (sObj.name === "PricebookEntry") {
-			//     debugger;
-			//   }
-
 			const localRejects: string[] = [];
 
 			// Can't be
-			if (sObj.customSetting) {
-				localRejects.push("Can't be Custom setting");
-			}
 			if (sObj.deprecatedAndHidden) {
 				localRejects.push("Can't be Deprecated and hidden");
 			}
@@ -254,12 +245,6 @@ export class SchemaDiscovery {
 			if (!sObj.retrieveable) {
 				localRejects.push("Must be retrieveable");
 			}
-			// if (!sObj.searchable) {
-			// 	localRejects.push("Must be searchable");
-			// }
-			// if (!sObj.undeletable) {
-			//   localRejects.push("Must be undeletable");
-			// }
 			if (!sObj.updateable) {
 				localRejects.push("Must be updateable");
 			}
@@ -280,7 +265,8 @@ export class SchemaDiscovery {
 					orderBy: null,
 					parents: [],
 					twoPassParents: [],
-					parentsRequired: []
+					parentsRequired: [],
+					isCustomSetting: sObj.customSetting
 				});
 				Util.writeLog(`[${this.orgManager.alias}] Found sObject [${sObj.name}].`, LogLevel.TRACE);
 			} else {
