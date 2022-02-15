@@ -167,9 +167,29 @@ This is the structure for each metadata sObject
 | ------------------- | ------- | --------- | ------------------------------------------------------------------------------- |
 | name                | N/A     | String    | Required field. SObject API name rather than the label.                         |
 | fieldsToExport      | N/A     | String[]  | Required field. List of fields that will be exported for each metadata sObject. |
-| matchBy<sup>9</sup> | N/A     | STring    | Required field. What makes the two metadata sObjects the same?                  |
+| matchBy<sup>9</sup> | N/A     | String    | Required field. What makes the two metadata sObjects the same?                  |
 | orderBy             | null    | String    | For exports, determines the order for the metadata records that are exported.   |
 | where               | null    | String    | Restrict which records are be exported.                                         |
+
+## Migrating Custom Settings
+
+The tool supports the migration of Custom Settings. To handle the proper mapping of possible owners (User, Profile) of Hierarchical Custom Settings, it is important to
+to have the following configuration for the metadata objects added to the `ETCopyData.json` file:
+
+```
+"sObjectsMetadata": [
+    {
+        "name": "User",
+        "fieldsToExport": "FirstName,LastName,Email,Id",
+        "matchBy": "Email"
+    },
+    {
+      "name": "Profile",
+      "fieldsToExport": "Name,Id",
+      "matchBy": "Name"
+    }
+]
+```
 
 ## References
 
@@ -261,7 +281,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\Compare.ts](https://github.com/j-fischer/ETCopyData/blob/v0.11.0/src\commands\ETCopyData\Compare.ts)_
+_See code: [src\commands\ETCopyData\Compare.ts](https://github.com/j-fischer/ETCopyData/blob/v0.12.0/src\commands\ETCopyData\Compare.ts)_
 
 ## `sfdx ETCopyData:delete [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -299,7 +319,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\delete.ts](https://github.com/j-fischer/ETCopyData/blob/v0.11.0/src\commands\ETCopyData\delete.ts)_
+_See code: [src\commands\ETCopyData\delete.ts](https://github.com/j-fischer/ETCopyData/blob/v0.12.0/src\commands\ETCopyData\delete.ts)_
 
 ## `sfdx ETCopyData:export [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -337,7 +357,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\export.ts](https://github.com/j-fischer/ETCopyData/blob/v0.11.0/src\commands\ETCopyData\export.ts)_
+_See code: [src\commands\ETCopyData\export.ts](https://github.com/j-fischer/ETCopyData/blob/v0.12.0/src\commands\ETCopyData\export.ts)_
 
 ## `sfdx ETCopyData:full [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -375,7 +395,7 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\full.ts](https://github.com/j-fischer/ETCopyData/blob/v0.11.0/src\commands\ETCopyData\full.ts)_
+_See code: [src\commands\ETCopyData\full.ts](https://github.com/j-fischer/ETCopyData/blob/v0.12.0/src\commands\ETCopyData\full.ts)_
 
 ## `sfdx ETCopyData:import [-c <string>] [-d <string>] [-s <string>] [-r] [--forceprodcopy] [--forceproddeletion] [-o] [--json] [--loglevel trace|debug|info|warn|error|fatal|TRACE|DEBUG|INFO|WARN|ERROR|FATAL]`
 
@@ -413,6 +433,6 @@ OPTIONS
                                                                                     this command invocation
 ```
 
-_See code: [src\commands\ETCopyData\import.ts](https://github.com/j-fischer/ETCopyData/blob/v0.11.0/src\commands\ETCopyData\import.ts)_
+_See code: [src\commands\ETCopyData\import.ts](https://github.com/j-fischer/ETCopyData/blob/v0.12.0/src\commands\ETCopyData\import.ts)_
 <!-- commandsstop -->
 <!-- ET-AUTO-STOP: This section is auto-updated... -->

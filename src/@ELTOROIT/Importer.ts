@@ -36,7 +36,7 @@ export class Importer {
 		return new Promise((resolve, reject) => {
 			const objectsToDeleteBeforeLoading: String[] = 
 				Array.from(orgDestination.settings.sObjectsDataRaw.values())
-					.filter((objSettings: ISettingsSObjectData) => objSettings.deleteDestination === true)
+					.filter((objSettings: ISettingsSObjectData) => objSettings.deleteDestination === true || orgDestination.discovery.getSObjects().get(objSettings.name).isCustomSetting)
 					.map((objSettings: ISettingsSObjectData) => objSettings.name);
 
 			Util.writeLog(`[${orgDestination.alias}] Objects to delete before loading: ` + objectsToDeleteBeforeLoading.join(", "), LogLevel.TRACE);		
@@ -341,6 +341,19 @@ export class Importer {
 								delete record[fieldName];
 							}
 						});
+
+						// Remove ORG ID from Custom Settings record
+						if (orgDestination.discovery.getSObjects().get(sObjName).isCustomSetting) {
+							if (record['SetupOwnerId'].substring(0,3) === '00D') {
+								delete record['SetupOwnerId'];
+							} else if (record['SetupOwnerId'].substring(0,3) === '005') { // User
+							    record['SetupOwnerId'] = this.matchingIds.get('User').get(record['SetupOwnerId']);
+							} else if (record['SetupOwnerId'].substring(0,3) === '00e') { // Profile
+							    record['SetupOwnerId'] = this.matchingIds.get('Profile').get(record['SetupOwnerId']);
+							} else {
+								Util.writeLog(`Unexpected Setup Owner Type for Custom Setting [${sObjName}]`, LogLevel.ERROR);
+							}
+						}
 					});
 
 					if (records.length > 0) {

@@ -1,12 +1,12 @@
 {
 	"name": "@jfischer/etcopydata",
 	"description": "SFDX Plugin to populate an org with data for multiple related sObjects.",
-	"version": "0.12.0-beta.0",
+	"version": "0.12.1",
 	"author": "Johannes Fischer",
 	"bugs": "https://github.com/j-fischer/ETCopyData/issues",
 	"dependencies": {
-		"@oclif/config": "1.17.0",
-		"@oclif/errors": "1.3.4",
+		"@oclif/config": "1.17.1",
+		"@oclif/errors": "1.3.5",
 		"@oclif/plugin-help": "3.3.0",
 		"@salesforce/command": "3.1.3",
 		"npm-check-updates": "10.3.1",
@@ -57,7 +57,7 @@
 	"scripts": {
 		"postpack": "del /F/Q oclif.manifest.json npm-shrinkwrap.json",
 		"posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
-		"prepack": "oclif-dev readme && npm shrinkwrap",
+		"prepack": "npm shrinkwrap",
 		"prepare": "del /F/Q lib && tsc && oclif-dev manifest",
 		"test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
 		"version": "oclif-dev readme && git add README.md"
